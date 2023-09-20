@@ -73,7 +73,9 @@ staaten_woerterbuch = {
 def eingabe():
     username = name.get()
     state = staat.get()
-    #gender = gender.get()
+    gender_ident = geschlecht.get()
+    gender = "x"    
+
     #Year = year.get() 
     anzahl = 0
 
@@ -86,15 +88,20 @@ def eingabe():
         #Wandelt die Kürzel der csv Datei mit Hilfe von staaten_woerterbuch um
         if state in staaten_woerterbuch:
             Kuerzel = staaten_woerterbuch[state]
-        else:
-            print(state)   
+        
+        #Bestimmt das Geschlecht
+        if gender_ident == 1:
+           gender = str("F")
+        else: 
+           gender = str("M")
         
         for line in file:
             split = line.strip().split(",")
             
 
             #Die Koordinaten werden erstellt
-            if split[1] == username and split[4] == Kuerzel:
+            if split[1] == username and split[4] == Kuerzel and split[3] == gender:
+             print("Der Name " + username + " ist im Staat " + state + " unter dem Geschlecht " + gender)
              #xx.append(split[2])
              #xy.append(split[5])
     
@@ -122,6 +129,19 @@ staat.set(staaten_liste[0])
 
 dropdown = tk.OptionMenu(root, staat, *staaten_liste)
 dropdown.pack()
+
+#Der Geschlecht Slider
+geschlecht = tk.Scale(root, from_=0, to=1, orient="horizontal")
+geschlecht.get()
+
+#Der Slider für die Zeitspanne
+year_range_label = tk.Label(root, text="Zeitspanne (Startjahr - Endjahr):")
+year_range_label.pack()
+
+year_range_slider = tk.Scale(root, from_=1910, to=2014, orient="horizontal", 
+                            sliderlength=30, showvalue=0, length=300, resolution=1)
+                            
+year_range_slider.pack()
 
 
 #Der Confirm Button. Er soll die Eingabe nur genehmigen, wenn alles weitere funktionert
