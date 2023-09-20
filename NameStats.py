@@ -4,13 +4,28 @@ import tkinter as tk
 from tkinter import *
 
 def eingabe():
-    user = name.get()
+    username = name.get()
+    #state = state.get()
+    #gender = gender.get()
+    #Year = year.get() 
+    
+    xx = []
+    xy = []
+    
+    anzahl = 0
+
     with open("names.csv", "r") as file:  
-         for line in file:
-            split = line.strip().split(",") 
-            if user == split[1]: 
-                print(split[1], split[2], split[3], split[4], split[5])
-                break
+        for line in file:
+            split = line.strip().split(",")
+            if split[1] == username:
+             xx.append(split[2])
+             xy.append(split[5])
+             anzahl += 1  # Erhöhen Sie die Anzahl für jede Zeile
+
+    print("Die Anzahl des Namens " + username + " ist:", anzahl)
+
+    plt.plot(xx, xy)
+    plt.show()
 
 root = tk.Tk()
 root.geometry("800x500")
