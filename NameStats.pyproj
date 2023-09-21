@@ -11,6 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>NameStats</Name>
     <RootNamespace>NameStats</RootNamespace>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>

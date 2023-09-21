@@ -1,6 +1,7 @@
 from tkinter import simpledialog
 import matplotlib.pyplot as plt
 import tkinter as tk
+import tkinter as ttk
 from tkinter import *
 
 staaten_liste = ["Alabama", "Alaska", "Arizona", "Arkansas", "California",
@@ -67,7 +68,7 @@ staaten_woerterbuch = {
     "Wyoming": "WY"
 }
 
-
+jahre = list(range(1910, 2015))
 
 
 def eingabe():
@@ -75,39 +76,55 @@ def eingabe():
     state = staat.get()
     gender_ident = geschlecht.get()
     gender = "x"    
-
-    #Year = year.get() 
-    anzahl = 0
+    yearMin = int(jahrMin.get())
+    yearMax = int(jahrMax.get())
+    yearRange = []
+    count = 0
 
     xx = []
     xy = []
-    
-
 
     with open("names.csv", "r") as file:  
+        #ID, Name, Jahr, Geschlecht, Staat, Anzahl
         #Wandelt die Kürzel der csv Datei mit Hilfe von staaten_woerterbuch um
         if state in staaten_woerterbuch:
             Kuerzel = staaten_woerterbuch[state]
         
         #Bestimmt das Geschlecht
         if gender_ident == 1:
-           gender = str("F")
+           gender = "F"
         else: 
-           gender = str("M")
+           gender = "M"
+         
+        #Definiert die Jahre
+        #Setzt das Jahr automatisch auf 2014 falls >= 2014
+        if yearMax > 2014: 
+            yearMax = 2014
+            print("Das Jahr darf 2014 nicht ueberschreiten")
+        
+        #Setzt das Jahr automatisch auf 1910 falls <= 1910
+        if yearMin < 1910:
+            yearMin = 1910
+            print("Das Jahr darf 1910 nicht unterschreiten")
+        
+        #erzeugt die Zeitspanne für den Graphen
+        yearRange = list(range(yearMin, yearMax + 1))
+         
+        print("Name: " + username)
+        print("Staat: " + state)
+        print("Geschlecht: " + gender)
+        print("Min Jahr: " + str(yearMin))
+        print("Max Jahr: " + str(yearMax))
+        print("Range: " + str(yearRange))
         
         for line in file:
-            split = line.strip().split(",")
-            
-
-            #Die Koordinaten werden erstellt
-            if split[1] == username and split[4] == Kuerzel and split[3] == gender:
-             print("Der Name " + username + " ist im Staat " + state + " unter dem Geschlecht " + gender)
-             #xx.append(split[2])
-             #xy.append(split[5])
-    
-             anzahl += 1
-    print(anzahl)
-                
+            split = line.strip().split(",")   
+            if split[1] == username and split[3] == gender and split[2] >= str(yearMin) and split[2] <= str(yearMax) and split[4] == Kuerzel:
+                print("Gesamt: " + split[1] + " im Jahr " + split[2] + " " + split[5] + "000 Personen")
+                xx.append(split[2])
+                xy.append(split[5])
+        print(xx)
+        print(xy)
 
 #Das GUI 
 root = tk.Tk()
@@ -132,17 +149,19 @@ dropdown.pack()
 
 #Der Geschlecht Slider
 geschlecht = tk.Scale(root, from_=0, to=1, orient="horizontal")
-geschlecht.get()
+geschlecht.pack()
 
-#Der Slider für die Zeitspanne
-year_range_label = tk.Label(root, text="Zeitspanne (Startjahr - Endjahr):")
-year_range_label.pack()
+#Das minimale Jahr
+jahrMinLabel = tk.Label(root, text="Min")
+jahrMinLabel.pack()
+jahrMin = ttk.Spinbox(root, values=jahre)
+jahrMin.pack()
 
-year_range_slider = tk.Scale(root, from_=1910, to=2014, orient="horizontal", 
-                            sliderlength=30, showvalue=0, length=300, resolution=1)
-                            
-year_range_slider.pack()
-
+#Das minimale Jahr
+jahrMaxLabel = tk.Label(root, text="Max")
+jahrMaxLabel.pack()
+jahrMax = ttk.Spinbox(root, values=jahre)
+jahrMax.pack()
 
 #Der Confirm Button. Er soll die Eingabe nur genehmigen, wenn alles weitere funktionert
 button = tk.Button(root, text="Submit", command=eingabe)
