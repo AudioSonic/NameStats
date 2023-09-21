@@ -2,6 +2,8 @@ from tkinter import simpledialog
 import matplotlib.pyplot as plt
 import tkinter as tk
 import tkinter as ttk
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import *
 
 staaten_liste = ["Alabama", "Alaska", "Arizona", "Arkansas", "California",
@@ -121,10 +123,19 @@ def eingabe():
             split = line.strip().split(",")   
             if split[1] == username and split[3] == gender and split[2] >= str(yearMin) and split[2] <= str(yearMax) and split[4] == Kuerzel:
                 print("Gesamt: " + split[1] + " im Jahr " + split[2] + " " + split[5] + "000 Personen")
-                xx.append(split[2])
-                xy.append(split[5])
+                xx.append(int(split[2]))
+                xy.append(int(split[5]))
         print(xx)
         print(xy)
+        
+        fig, ax = plt.subplots()
+        ax.plot(xx, xy, linestyle='-')
+        ax.set_xlabel('Year')
+        ax.set_ylabel('Count')
+        
+        canvas = FigureCanvasTkAgg(fig, master=root)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.pack()
 
 #Das GUI 
 root = tk.Tk()
