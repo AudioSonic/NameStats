@@ -128,56 +128,67 @@ def eingabe():
         print(xx)
         print(xy)
         
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(4, 2))
         ax.plot(xx, xy, linestyle='-')
         ax.set_xlabel('Year')
         ax.set_ylabel('Count')
         
         canvas = FigureCanvasTkAgg(fig, master=root)
         canvas_widget = canvas.get_tk_widget()
-        canvas_widget.pack()
+        canvas_widget.grid(row=7, column=2, rowspan=4)
 
-#Das GUI 
+#Das allgemeine Layout
 root = tk.Tk()
-root.geometry("800x500")
 root.title("NameStats")
+root.geometry("750x600")
 
-#Die Überschrift
-label = tk.Label(root, text="NameStats", font=('Arial', 18))
-label.pack(padx=20, pady=20)
-
-#Das Textfeld für den Namen
+#Die Widgets
+label = tk.Label(root, text="NameStats", font=("Arial", 18))
+name_label = tk.Label(root, text="Name: ")
 name = tk.Entry(root)
-name.pack()
-name.focus()
-
-#Das "States" Dropdown Menü. staat bestimmt die Standardoption
 staat = tk.StringVar(root)
 staat.set(staaten_liste[0])
-
+state_label = tk.Label(root, text="State: ")
 dropdown = tk.OptionMenu(root, staat, *staaten_liste)
-dropdown.pack()
-
-#Der Geschlecht Slider
-geschlecht = tk.Scale(root, from_=0, to=1, orient="horizontal")
-geschlecht.pack()
-
-#Das minimale Jahr
-jahrMinLabel = tk.Label(root, text="Min")
-jahrMinLabel.pack()
-jahrMin = ttk.Spinbox(root, values=jahre)
-jahrMin.pack()
-
-#Das minimale Jahr
-jahrMaxLabel = tk.Label(root, text="Max")
-jahrMaxLabel.pack()
-jahrMax = ttk.Spinbox(root, values=jahre)
-jahrMax.pack()
-
-#Der Confirm Button. Er soll die Eingabe nur genehmigen, wenn alles weitere funktionert
+gender_label = tk.Label(root, text="Gender: ")
+gender_label_F = tk.Label(root, text="F")
+gender_label_M = tk.Label(root, text="M")
+geschlecht = tk.Scale(root, from_=0, to=1, orient="horizontal", showvalue=0)
+jahrMinLabel = tk.Label(root, text="Year Min: ")
+jahrMin = tk.Spinbox(root, values=jahre, width=5)
+jahrMaxLabel = tk.Label(root, text="Year Max: ")
+jahrMax = tk.Spinbox(root, values=jahre, width=5)
 button = tk.Button(root, text="Submit", command=eingabe)
-button.pack()
 
+#Die Überschrift
+label.grid(row=0, column=2, padx=10, pady=10) 
+
+#Das Namensfeld
+name_label.grid(row=1, column=0)
+name.grid(row=1, column=2, pady=10)
+name.focus()
+
+#Das States dropdown Menü
+state_label.grid(row=2, column=0, pady=10)
+dropdown.grid(row=2, column=2)
+
+#Das Geschlecht
+gender_label.grid(row=3, column=0)
+gender_label_M.grid(row=3, column=1, ipadx=1)
+geschlecht.grid(row=3, column=2, pady=10, padx=160)
+gender_label_F.grid(row=3, column=3, ipadx=1)
+
+#Die Auswahl der Jahre
+jahrMinLabel.grid(row=5, column=0, padx=0, pady=10, ipadx="50")
+jahrMin.grid(row=5, column=1)
+
+jahrMax.grid(row=5, column=3)
+jahrMaxLabel.grid(row=5, column=2)
+
+#Der Submit Button
+button.grid(row=6, column=2, pady=20)
+
+# Starten der Tkinter-Hauptschleife
 root.mainloop()
 
 
