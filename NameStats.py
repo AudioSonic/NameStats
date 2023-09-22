@@ -1,10 +1,12 @@
 from tkinter import simpledialog
 import matplotlib.pyplot as plt
 import tkinter as tk
-import tkinter as ttk
+from tkinter import Text
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import *
+
+from numpy import delete
 
 staaten_liste = ["Alabama", "Alaska", "Arizona", "Arkansas", "California",
     "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
@@ -72,7 +74,6 @@ staaten_woerterbuch = {
 
 jahre = list(range(1910, 2015))
 
-
 def eingabe():
     username = name.get()
     state = staat.get()
@@ -83,15 +84,19 @@ def eingabe():
     yearRange = []
     count = 0
 
+    
     xx = []
     xy = []
 
     with open("names.csv", "r") as file:  
         #ID, Name, Jahr, Geschlecht, Staat, Anzahl
+        #Entfernt sämtliche Warnungen in der Textbox
+        info_text.config(state=tk.NORMAL)
+        info_text.delete(1.0, tk.END)
         #Wandelt die Kürzel der csv Datei mit Hilfe von staaten_woerterbuch um
         if state in staaten_woerterbuch:
             Kuerzel = staaten_woerterbuch[state]
-        
+
         #Bestimmt das Geschlecht
         if gender_ident == 1:
            gender = "F"
@@ -99,15 +104,25 @@ def eingabe():
            gender = "M"
          
         #Definiert die Jahre
-        #Setzt das Jahr automatisch auf 2014 falls >= 2014
+        #Wenn das max Jahr > min Jahr oder andersrum, gibt es eine Fehlermeldung
+        if yearMin >= yearMax:
+            yearMin == yearMax - 1
+            info_text.insert(tk.END, "The min year must not exceed the max year!")
+        elif yearMax <= yearMin:
+            yearMax = yearMin + 1
+            info_text.insert(tk.END, "The max year must not go below the min year!")
+            
+        #Setzt das Jahr automatisch auf 2014 falls >= 2014  
         if yearMax > 2014: 
             yearMax = 2014
-            print("Das Jahr darf 2014 nicht ueberschreiten")
+            info_text.insert(tk.END, "The year must not exceed 2014. It is automatically set to 2014.")
         
         #Setzt das Jahr automatisch auf 1910 falls <= 1910
         if yearMin < 1910:
             yearMin = 1910
-            print("Das Jahr darf 1910 nicht unterschreiten")
+            info_text.insert(tk.END,"The year must not go below 1910. It is automatically set to 1910.")
+         
+        
         
         #erzeugt die Zeitspanne für den Graphen
         yearRange = list(range(yearMin, yearMax + 1))
@@ -122,25 +137,37 @@ def eingabe():
         for line in file:
             split = line.strip().split(",")   
             if split[1] == username and split[3] == gender and split[2] >= str(yearMin) and split[2] <= str(yearMax) and split[4] == Kuerzel:
-                print("Gesamt: " + split[1] + " im Jahr " + split[2] + " " + split[5] + "000 Personen")
+                info_text.insert(tk.END,"Gesamt: " + split[1] + " im Jahr " + split[2] + " " + split[5] + "000 Personen")
                 xx.append(int(split[2]))
                 xy.append(int(split[5]))
         print(xx)
         print(xy)
         
-        fig, ax = plt.subplots(figsize=(4, 2))
+        #Erstellt den Graphen nachdem der Knopf gedürckt wurde
+        graph_breite=4
+        graph_hoehe=2
+        fig, ax = plt.subplots(figsize=(graph_breite, graph_hoehe))
         ax.plot(xx, xy, linestyle='-')
         ax.set_xlabel('Year')
         ax.set_ylabel('Count')
-        
         canvas = FigureCanvasTkAgg(fig, master=root)
         canvas_widget = canvas.get_tk_widget()
-        canvas_widget.grid(row=7, column=2, rowspan=4)
+        canvas_widget.grid(row=8, column=2, rowspan=4)
+             
+        #Deaktiviert die Funktion in die Textbox schreiben zu können
+        info_text.config(state=tk.DISABLED)
+        
+
 
 #Das allgemeine Layout
 root = tk.Tk()
 root.title("NameStats")
 root.geometry("750x600")
+
+#Die Textbox. tk.DISABLED sorgt dafür, dass der Benutzer nicht in die Textbox schreiben kann
+info_text = Text(root, height=5, width=40, wrap=tk.WORD)
+info_text.grid(row=7, column=2, padx=10, pady=10)
+info_text.config(state=tk.NORMAL)
 
 #Die Widgets
 label = tk.Label(root, text="NameStats", font=("Arial", 18))
