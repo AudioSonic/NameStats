@@ -90,10 +90,10 @@ def eingabe():
 
     with open("names.csv", "r") as file:  
         #ID, Name, Jahr, Geschlecht, Staat, Anzahl
-        #Entfernt sämtliche Warnungen in der Textbox
+        #Entfernt saemtliche Warnungen in der Textbox
         info_text.config(state=tk.NORMAL)
         info_text.delete(1.0, tk.END)
-        #Wandelt die Kürzel der csv Datei mit Hilfe von staaten_woerterbuch um
+        #Wandelt die Kï¿½rzel der csv Datei mit Hilfe von staaten_woerterbuch um
         if state in staaten_woerterbuch:
             Kuerzel = staaten_woerterbuch[state]
 
@@ -124,7 +124,7 @@ def eingabe():
          
         
         
-        #erzeugt die Zeitspanne für den Graphen
+        #erzeugt die Zeitspanne fï¿½r den Graphen
         yearRange = list(range(yearMin, yearMax + 1))
          
         print("Name: " + username)
@@ -137,13 +137,15 @@ def eingabe():
         for line in file:
             split = line.strip().split(",")   
             if split[1] == username and split[3] == gender and split[2] >= str(yearMin) and split[2] <= str(yearMax) and split[4] == Kuerzel:
-                info_text.insert(tk.END,"Gesamt: " + split[1] + " im Jahr " + split[2] + " " + split[5] + "000 Personen")
+                info_text.insert(tk.END,"Year: " + split[2] + ", count: " + split[5] + "\n")
                 xx.append(int(split[2]))
                 xy.append(int(split[5]))
-        print(xx)
+                maxCount = max(xy)
+                minCount= min(xy)
+        info_text.insert(tk.END,"Most people: " + str(maxCount) + "\n" + "Least people: " + str(minCount))
         print(xy)
         
-        #Erstellt den Graphen nachdem der Knopf gedürckt wurde
+        #Erstellt den Graphen nachdem der Knopf gedï¿½rckt wurde
         graph_breite=4
         graph_hoehe=2
         fig, ax = plt.subplots(figsize=(graph_breite, graph_hoehe))
@@ -154,7 +156,7 @@ def eingabe():
         canvas_widget = canvas.get_tk_widget()
         canvas_widget.grid(row=8, column=2, rowspan=4)
              
-        #Deaktiviert die Funktion in die Textbox schreiben zu können
+        #Deaktiviert die Funktion in die Textbox schreiben zu kï¿½nnen
         info_text.config(state=tk.DISABLED)
         
 
@@ -164,7 +166,7 @@ root = tk.Tk()
 root.title("NameStats")
 root.geometry("750x600")
 
-#Die Textbox. tk.DISABLED sorgt dafür, dass der Benutzer nicht in die Textbox schreiben kann
+#Die Textbox. tk.DISABLED sorgt dafï¿½r, dass der Benutzer nicht in die Textbox schreiben kann
 info_text = Text(root, height=5, width=40, wrap=tk.WORD)
 info_text.grid(row=7, column=2, padx=10, pady=10)
 info_text.config(state=tk.NORMAL)
@@ -187,7 +189,7 @@ jahrMaxLabel = tk.Label(root, text="Year Max: ")
 jahrMax = tk.Spinbox(root, values=jahre, width=5)
 button = tk.Button(root, text="Submit", command=eingabe)
 
-#Die Überschrift
+#Die ï¿½berschrift
 label.grid(row=0, column=2, padx=10, pady=10) 
 
 #Das Namensfeld
@@ -195,7 +197,7 @@ name_label.grid(row=1, column=0)
 name.grid(row=1, column=2, pady=10)
 name.focus()
 
-#Das States dropdown Menü
+#Das States dropdown Menï¿½
 state_label.grid(row=2, column=0, pady=10)
 dropdown.grid(row=2, column=2)
 
